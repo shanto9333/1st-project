@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-BgbdOVog5cnvVt3fCL+qziN7a/DjO3uPxxuNLKcvsyGdWybHcIJ/hML9RiLbrX1KwT1XzJRtShqCINv4d82qtw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .editor {
+            flex: 1;
+            background-color: #282828;
+            color: #d4d4d4;
+            padding: 20px;
+            overflow: auto;
+            border-right: 1px solid #333333;
+        }
+
+        textarea {
+            width: 100%;
+            height: calc(100vh - 40px);
+            border: none;
+            background-color: transparent;
+            color: #d4d4d4;
+            font-family: inherit;
+            font-size: 16px;
+            resize: none;
+            outline: none;
+        }
+
+        .output {
+            flex: 1;
+            background-color: #212121;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: transparent;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #282828;
+            padding: 10px;
+            border-top: 1px solid #333333;
+        }
+
+        .controls button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+        }
+
+        .controls button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="editor">
+            <textarea id="html-code" placeholder="Enter HTML code"></textarea>
+        </div>
+        <div class="output">
+            <iframe id="output"></iframe>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="run()"><i class="fas fa-play"></i> Run</button>
+        <button onclick="saveCode()"><i class="fas fa-save"></i> Save</button>
+        <button onclick="loadCode()"><i class="fas fa-folder-open"></i> Load</button>
+        <button onclick="resetCode()"><i class="fas fa-undo"></i> Reset</button>
+    </div>
+
+    <script>
+        function run() {
+            let htmlCode = document.getElementById("html-code").value;
+            let outputFrame = document.getElementById("output");
+
+            let outputDocument = outputFrame.contentDocument || outputFrame.contentWindow.document;
+
+            outputDocument.open();
+            outputDocument.write("");
+            outputDocument.close();
+
+            let outputContent = outputDocument.createElement("div");
+            outputContent.innerHTML = htmlCode;
+
+            outputDocument.body.appendChild(outputContent);
+        }
+
+        function saveCode() {
+            let htmlCode = document.getElementById("html-code").value;
+
+            localStorage.setItem("savedHtmlCode", htmlCode);
+        }
+
+        function loadCode() {
+            document.getElementById("html-code").value = localStorage.getItem("savedHtmlCode") || "";
+
+            run();
+        }
+
+        function resetCode() {
+            localStorage.removeItem("savedHtmlCode");
+
+            document.getElementById("html-code").value = "";
+
+            document.getElementById("output").contentDocument.body.innerHTML = "";
+        }
+    </script>
+</body>
+</html>
